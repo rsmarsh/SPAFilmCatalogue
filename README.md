@@ -17,8 +17,4 @@ This repo only contains the API server that you can run your work against. It is
 
 # The Final thing
 
-If you could create a new repo from this one and host it either on Github, Gitlab or Bitbucket that'd be great.
-
-## Authors
-
-* **Luke Todd** - [lukeajtodd](https://github.com/lukeajtodd)
+If you could create a new repo from this one and host it on Bitbucket that'd be great.
