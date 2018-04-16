@@ -10,7 +10,7 @@ server.use(
     }
   );
 
-server.get('films', (req, res, next) => {
+server.get('/films', (req, res, next) => {
     res.json(data);
     next();
 });
