@@ -1,0 +1,24 @@
+body {
+  background-color: #232f49;
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+#filmList {
+  list-style-type: none;
+
+}
+
+.filmTitle {
+  font-weight: 900 'Black';
+  font-size: 16px;
+  color: #ffffff;
+  transform-origin: left;
+}
+
+.filmTitle:hover {
+  cursor: pointer;
+  transform: translate(0px, -3px);
+  -webkit-transform: scale(1.1); 
+  overflow: hidden;
+}
