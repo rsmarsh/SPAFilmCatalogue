@@ -16,12 +16,6 @@ body {
   transform-origin: left;
 }
 
-.filmTitle:hover {
-  cursor: pointer;
-  transform: translate(0px, -3px);
-  -webkit-transform: scale(1.1); 
-  overflow: hidden;
-}
 
 #modalWindow {
   /* display: none; */
@@ -33,4 +27,66 @@ body {
   position: fixed;
   overflow: hidden;
   background-color: #4cbcc2;
+}
+
+/* modal menu's close button */
+.close {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.3;
+}
+.close:hover {
+  opacity: 1;
+}
+.close:before, .close:after {
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 33px;
+  width: 2px;
+  background-color: #333;
+}
+.close:before {
+  transform: rotate(45deg);
+}
+.close:after {
+  transform: rotate(-45deg);
+}
+
+/* responsive square grid for film tiles */
+.square-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.square {
+  position: relative;
+  flex-basis:  100px;
+  margin: 5px;
+  border: 1px solid;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.square:hover {
+  cursor: pointer;
+  transform: translate(0px, -3px);
+  -webkit-transform: scale(1.1); 
+  overflow: hidden;
+}
+
+.square::before {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
+.square .content {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 100%;
 }

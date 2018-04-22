@@ -59,6 +59,10 @@ let ContentContainer = React.createClass({
 	
 	//toggles whether the modal window containing film information is visible or not
 	toggleModal: function(setTo) {
+		//this function can operate as a toggle, or have a predefined action
+		if (typeof setTo !== 'boolean') {
+			setTo = !this.state.modalVisible;
+		}
 		this.setState({modalVisible: setTo});
 	},
 
@@ -110,7 +114,7 @@ let ContentContainer = React.createClass({
 			<div id="reactContent">
 				<FilmController onOrderUpdate={this.updateListOrder} onSortUpdate={this.updateSortProperty} onFilterUpdate={this.updateListFilters}/>
 				<FilmList dataURL={this.props.dataURL} filtersApplied={this.state.filter} sortBy={this.state.sortBy} isAscending={this.state.isAscending} onClick={this.filmSelected} storeFilmList={this.receiveFilmList} />,
-				<ModalWindow isVisible={this.state.modalVisible} filmDisplayed={this.state.filmDisplayed} />
+				<ModalWindow isVisible={this.state.modalVisible} filmDisplayed={this.state.filmDisplayed} closeWindow={this.toggleModal} />
 			</div>
 		);
 	}
@@ -228,13 +232,13 @@ let FilmList = React.createClass({
 		let films = sortArrayBy(this.props.sortBy, this.props.isAscending, this.state.filmList.slice(0));
 		// films = applyFilters(this.props.filtersApplied, films);
 		return (
-			<div>
-				<ul id="filmList">
+				<div id="filmList" className="square-container">
 				{/* iterate over the films array, creating a single Film component for each available film*/}
 					{films.map(function(film) {
-						return <li data-filmid={film.id} key={film.id} onClick={this.props.onClick}> <Film filmInfo={film} filtersApplied={this.props.filtersApplied} /> </li>;
+						return <div className="square" data-filmid={film.id} key={film.id} onClick={this.props.onClick}> 
+							<Film filmInfo={film} filtersApplied={this.props.filtersApplied} /> 
+						</div>;
 					}, this)}
-				</ul>
 			</div>
 		);
 	}
@@ -255,11 +259,11 @@ let Film = React.createClass({
 		let displayScore = this.props.filtersApplied.rtScore;
 
 		return (
-			<p className="filmTitle">
-				{displayTitle ? filmInfo.title : ''} 
-				{displayYear ? ' ('+filmInfo.year+')' : ''}
+			<div className="filmTitle content">
+				{displayTitle ? filmInfo.title : ''} <br />
+				{displayYear ? ' ('+filmInfo.year+')' : ''} <br />
 				{displayScore ? ' '+filmInfo.rtScore+'%' : ''}
-			</p>
+			</div>
 		)
 	}
 });
@@ -275,9 +279,11 @@ let ModalWindow = React.createClass({
 		console.log(this.props.filmDisplayed);
 		return (
 			<div id="modalWindow" style={{display: visibility}}> 
+				<a href="#" onClick={this.props.closeWindow} className="close"></a>
 				<h1>{this.props.filmDisplayed.title}</h1>
-				<h2>Year {this.props.filmDisplayed.year}</h2>
-				<h2>Rotten Tomatoes Score {this.props.filmDisplayed.rtScore}%</h2>
+				<h3>{this.props.filmDisplayed.description}</h3>
+				<h2>Released {this.props.filmDisplayed.year}</h2>
+				<h2>Rotten Tomatoes {this.props.filmDisplayed.rtScore}%</h2>
 				<h3>Directed by {this.props.filmDisplayed.director}</h3>
 				<h3>Produced by {this.props.filmDisplayed.producer}</h3>
 			</div>
