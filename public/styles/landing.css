@@ -22,3 +22,15 @@ body {
   -webkit-transform: scale(1.1); 
   overflow: hidden;
 }
+
+#modalWindow {
+  /* display: none; */
+  z-index: 1;
+  width: 75%;
+  height: 50%;
+  left: 12%;
+  top: 25%;
+  position: fixed;
+  overflow: hidden;
+  background-color: #4cbcc2;
+}

@@ -44,6 +44,9 @@ let ContentContainer = React.createClass({
 	
 	getInitialState() {
     return {
+			modalVisible: false,
+			filmDisplayed: null, //which film is listed within the modal
+			completeFilmList: null, //the raw untouched film list as it was when received
 			isAscending: false,
 			sortBy: "title",
 			filter: {
@@ -52,9 +55,38 @@ let ContentContainer = React.createClass({
 				"rtScore": true
 			},
     };
-  },
+	},
+	
+	//toggles whether the modal window containing film information is visible or not
+	toggleModal: function(setTo) {
+		this.setState({modalVisible: setTo});
+	},
 
-  	//alternate whether the list is ordered by ascending or descending 
+	receiveFilmList: function(newFilmList) {
+		this.setState({completeFilmList: newFilmList});
+	},
+
+	getFilmFromId: function(filmId) {
+		for (let i=0; i < this.state.completeFilmList.length; i++) {
+			if (this.state.completeFilmList[i].id === filmId) {
+				return this.state.completeFilmList[i];
+			}
+		}
+		console.error("selected film not found in film list");
+	},
+
+	//find the film within the film catalogue, using the ID as an identifier
+	filmSelected: function(newFilm) {
+		//the ID of each film is stored within the element itself, so that we can identify which film was clicked by checking the dataset of the event's target
+		var selectedFilm = this.getFilmFromId(newFilm.currentTarget.dataset.filmid);
+		console.log("selectedFilm is:");
+		console.log(selectedFilm); 
+		
+		this.setState({filmDisplayed: selectedFilm});
+		this.toggleModal(true);
+	},
+
+  //alternate whether the list is ordered by ascending or descending 
 	updateListOrder: function(checked){
 		this.setState({isAscending: checked});
 	},
@@ -65,7 +97,7 @@ let ContentContainer = React.createClass({
 	},
 
 	updateListFilters: function(updatedFilter, value) {
-		//create a copy of the state's object to be modified, before overwriting it with the setState function
+		//first create a copy of the state's object to be modified, before overwriting it with the setState function
 		let filterList = Object.assign({}, this.state.filter);
 		filterList[updatedFilter] = value;
 		this.setState({filter: filterList});
@@ -77,7 +109,8 @@ let ContentContainer = React.createClass({
 		return (
 			<div id="reactContent">
 				<FilmController onOrderUpdate={this.updateListOrder} onSortUpdate={this.updateSortProperty} onFilterUpdate={this.updateListFilters}/>
-				<FilmList dataURL={this.props.dataURL} filtersApplied={this.state.filter} sortBy={this.state.sortBy} isAscending={this.state.isAscending} />,
+				<FilmList dataURL={this.props.dataURL} filtersApplied={this.state.filter} sortBy={this.state.sortBy} isAscending={this.state.isAscending} onClick={this.filmSelected} storeFilmList={this.receiveFilmList} />,
+				<ModalWindow isVisible={this.state.modalVisible} filmDisplayed={this.state.filmDisplayed} />
 			</div>
 		);
 	}
@@ -145,21 +178,27 @@ let FilmList = React.createClass({
 	
 	getInitialState() {
     return {
-      jsonReceived: false
+      jsonReceived: false,
     };
   },
 
   processFilmList: function(filmData) {
 	  console.log("raw film data:");
-	  console.log(filmData);
-	let parsedFilmList = [];
-	for (let film in filmData) {
-		parsedFilmList.push ({
-			'id': filmData[film].id,
-			'title': filmData[film].title,
-			'year': Number([filmData[film].release_date]), //with the year and percentage as a number,
-			'rtScore': Number([filmData[film].rt_score])   //it becomes much more compatible with the sort algorithm
-		});
+		console.log(filmData);
+		let parsedFilmList = [];
+		for (let film in filmData) {
+			parsedFilmList.push ({
+				'id': filmData[film].id,
+				'title': filmData[film].title,
+				'year': Number([filmData[film].release_date]), //with the year and percentage as a number,
+				'rtScore': Number([filmData[film].rt_score]),   //it becomes much more compatible with the sort algorithm
+				'description': filmData[film].description,
+				'director': filmData[film].director,
+				'producer': filmData[film].producer
+				
+			});
+			//return the full film list and all properties back to the parent object, so it can be manipulated by the modal container
+			this.props.storeFilmList(parsedFilmList);
 	}
 	console.log(parsedFilmList);
 	//trigger a render with the prepared film list
@@ -184,8 +223,6 @@ let FilmList = React.createClass({
 			//retun null or false to tell react that you don't want anything rendered
 			return false;
 		}
-
-	
 		
 		//passes the film array (by value, not reference!) to be sorted, leaving the original array intact for future use
 		let films = sortArrayBy(this.props.sortBy, this.props.isAscending, this.state.filmList.slice(0));
@@ -195,7 +232,7 @@ let FilmList = React.createClass({
 				<ul id="filmList">
 				{/* iterate over the films array, creating a single Film component for each available film*/}
 					{films.map(function(film) {
-						return <li key={film.id}> <Film filmInfo={film} filtersApplied={this.props.filtersApplied} /> </li>;
+						return <li data-filmid={film.id} key={film.id} onClick={this.props.onClick}> <Film filmInfo={film} filtersApplied={this.props.filtersApplied} /> </li>;
 					}, this)}
 				</ul>
 			</div>
@@ -226,6 +263,27 @@ let Film = React.createClass({
 		)
 	}
 });
+
+let ModalWindow = React.createClass({
+	render: function() {
+		//show/hide the div upon re-renders by toggling the style between display and none
+		let visibility = this.props.isVisible ? 'block' : 'none';
+		//if this is rendering without an available film to display, cancel
+		if (!this.props.filmDisplayed) {
+			return null;
+		}
+		console.log(this.props.filmDisplayed);
+		return (
+			<div id="modalWindow" style={{display: visibility}}> 
+				<h1>{this.props.filmDisplayed.title}</h1>
+				<h2>Year {this.props.filmDisplayed.year}</h2>
+				<h2>Rotten Tomatoes Score {this.props.filmDisplayed.rtScore}%</h2>
+				<h3>Directed by {this.props.filmDisplayed.director}</h3>
+				<h3>Produced by {this.props.filmDisplayed.producer}</h3>
+			</div>
+		)
+	}
+})
 	
 	
 ReactDOM.render(
