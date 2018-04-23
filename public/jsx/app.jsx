@@ -28,13 +28,6 @@ let sortArrayBy = function(sortCategory, isAscending, arr) {
 	return arr;
 };
 
-let applyFilters = function(filtersApplied, arr) {
-	console.log("rendering, applying the following filters:");
-	console.log(filtersApplied);
-	console.log(arr);
-	return arr;
-};
-
 /*
 	The parent component surrounding all of the components within the page
 	This component is the first to rendered straight to index.htm by the ReactDOM
@@ -83,8 +76,8 @@ let ContentContainer = React.createClass({
 	filmSelected: function(newFilm) {
 		//the ID of each film is stored within the element itself, so that we can identify which film was clicked by checking the dataset of the event's target
 		var selectedFilm = this.getFilmFromId(newFilm.currentTarget.dataset.filmid);
-		console.log("selectedFilm is:");
-		console.log(selectedFilm); 
+		// console.log("selectedFilm is:");
+		// console.log(selectedFilm); 
 		
 		this.setState({filmDisplayed: selectedFilm});
 		this.toggleModal(true);
@@ -201,8 +194,8 @@ let FilmList = React.createClass({
   },
 
   processFilmList: function(filmData) {
-	  console.log("raw film data:");
-		console.log(filmData);
+	  // console.log("raw film data:");
+		// console.log(filmData);
 		let parsedFilmList = [];
 		for (let film in filmData) {
 			parsedFilmList.push ({
@@ -218,7 +211,6 @@ let FilmList = React.createClass({
 			//return the full film list and all properties back to the parent object, so it can be manipulated by the modal container
 			this.props.storeFilmList(parsedFilmList);
 	}
-	console.log(parsedFilmList);
 	//trigger a render with the prepared film list
 	this.setState({filmList: parsedFilmList, jsonReceived: true});
   },
@@ -244,7 +236,6 @@ let FilmList = React.createClass({
 		
 		//passes the film array (by value, not reference!) to be sorted, leaving the original array intact for future use
 		let films = sortArrayBy(this.props.sortBy, this.props.isAscending, this.state.filmList.slice(0));
-		// films = applyFilters(this.props.filtersApplied, films);
 		return (
 				<div id="filmList" className="square-container">
 				
@@ -292,7 +283,7 @@ let ModalWindow = React.createClass({
 		if (!this.props.filmDisplayed) {
 			return null;
 		}
-		console.log(this.props.filmDisplayed);
+		// console.log(this.props.filmDisplayed);
 		return (
 			<div id="modalWindow" style={{display: visibility}}> 
 				<a href="#" onClick={this.props.closeWindow} className="close"></a>
@@ -307,13 +298,8 @@ let ModalWindow = React.createClass({
 	}
 })
 	
-	
+	// Attach the .jsx content to the empty div titled 'app', and kick off the initial component render
 ReactDOM.render(
 	<ContentContainer dataURL="/films"/>,
 	document.getElementById('app')
 );
-
-
-
-
-
