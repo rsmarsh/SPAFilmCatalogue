@@ -47,7 +47,7 @@ let ContentContainer = React.createClass({
 			modalVisible: false,
 			filmDisplayed: null, //which film is listed within the modal
 			completeFilmList: null, //the raw untouched film list as it was when received
-			isAscending: false,
+			isAscending: true,
 			sortBy: "title",
 			filter: {
 				"title": true,
@@ -112,6 +112,7 @@ let ContentContainer = React.createClass({
 	render: function(){
 		return (
 			<div id="reactContent">
+				<Title />
 				<FilmController onOrderUpdate={this.updateListOrder} onSortUpdate={this.updateSortProperty} onFilterUpdate={this.updateListFilters}/>
 				<FilmList dataURL={this.props.dataURL} filtersApplied={this.state.filter} sortBy={this.state.sortBy} isAscending={this.state.isAscending} onClick={this.filmSelected} storeFilmList={this.receiveFilmList} />,
 				<ModalWindow isVisible={this.state.modalVisible} filmDisplayed={this.state.filmDisplayed} closeWindow={this.toggleModal} />
@@ -144,35 +145,48 @@ let FilmController = React.createClass({
 
 	render: function(){
 		return (
-			<div>Sort By 
+			<div id="filmController">
+				<p className="subheading">Filters </p> 
+				<br/>
+
+
+
+				<input id="filterTitle" type="checkbox" data-filterid="title" onClick={this.updateFilter} defaultChecked></input>
+				<label className="filterText" htmlFor="filterTitle">Title </label>
+				<br/>
+				<input id="filterYear" type="checkbox" data-filterid="year" onClick={this.updateFilter} defaultChecked></input>
+				<label className="filterText" htmlFor="filterYear">Year </label>
+				<br/>
+				<input id="filterScore" type="checkbox" data-filterid="rtScore" onClick={this.updateFilter} defaultChecked></input>
+				<label className="filterText" htmlFor="filterScore">Score (Rotten Tomatoes) </label>
+				<br/>
+				<br/>
+
 				{/*when a new item is selected, change the list to be ordered by the selected item*/}
+				<p className="subheading">Sort By</p> 
+				<br/>
+				{/*When the check box is altered, the list will toggle between ascending/descending*/}
 				<select onChange={this.updateSortBy} id="sortBySelect">
-					<option data-sort-by="title">Title</option>
+					<option data-sort-by="title">Title</option> 
 					<option data-sort-by="year">Release Year</option>
 					<option data-sort-by="rtScore">Rotten Tomatoes Score</option>
 				</select>
-
-				{/*When the check box is altered, the list will toggle between ascending/descending*/}
-				<label className="filmTitle" htmlFor="ascendingCheckbox">Ascending </label>
-				<input id="ascendingCheckbox" type="checkbox" onClick={this.updateAscending}></input>
-
-				<h2>Filters: </h2> 
-
-				<label className="filmTitle" htmlFor="filterTitle">Title </label>
-				<input id="filterTitle" type="checkbox" data-filterid="title" onClick={this.updateFilter} defaultChecked></input>
-
-				<label className="filmTitle" htmlFor="filterYear">Year </label>
-				<input id="filterYear" type="checkbox" data-filterid="year" onClick={this.updateFilter} defaultChecked></input>
-
-				<label className="filmTitle" htmlFor="filterScore">Rotten Tomatoes Score </label>
-				<input id="filterScore" type="checkbox" data-filterid="rtScore" onClick={this.updateFilter} defaultChecked></input>
+				<input id="ascendingCheckbox" type="checkbox" onClick={this.updateAscending} defaultChecked></input>
+				<label className="filterText" htmlFor="ascendingCheckbox">Ascending </label>
+				
 
 			</div>
 		);
 	}
 });
 
-
+let Title = React.createClass({
+	render: function() {
+		return (
+			<p className="heroHeading">Film Catalogue</p>
+		)
+	}
+})
 			
 /*
 	The parent container holding the list of films
@@ -233,6 +247,8 @@ let FilmList = React.createClass({
 		// films = applyFilters(this.props.filtersApplied, films);
 		return (
 				<div id="filmList" className="square-container">
+				
+				
 				{/* iterate over the films array, creating a single Film component for each available film*/}
 					{films.map(function(film) {
 						return <div className="square" data-filmid={film.id} key={film.id} onClick={this.props.onClick}> 
@@ -259,10 +275,10 @@ let Film = React.createClass({
 		let displayScore = this.props.filtersApplied.rtScore;
 
 		return (
-			<div className="filmTitle content">
-				{displayTitle ? filmInfo.title : ''} <br />
-				{displayYear ? ' ('+filmInfo.year+')' : ''} <br />
-				{displayScore ? ' '+filmInfo.rtScore+'%' : ''}
+			<div className="filmSquare content">
+				<p className="filmSquareTitle">{displayTitle ? filmInfo.title : ''}</p> <br />
+				{displayYear ? filmInfo.year : ''} <br />
+				{displayScore ? filmInfo.rtScore+'%' : ''}
 			</div>
 		)
 	}
@@ -280,7 +296,7 @@ let ModalWindow = React.createClass({
 		return (
 			<div id="modalWindow" style={{display: visibility}}> 
 				<a href="#" onClick={this.props.closeWindow} className="close"></a>
-				<h1>{this.props.filmDisplayed.title}</h1>
+				<p className="modalHeading">{this.props.filmDisplayed.title}</p>
 				<h3>{this.props.filmDisplayed.description}</h3>
 				<h2>Released {this.props.filmDisplayed.year}</h2>
 				<h2>Rotten Tomatoes {this.props.filmDisplayed.rtScore}%</h2>

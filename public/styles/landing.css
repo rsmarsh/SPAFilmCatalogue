@@ -9,11 +9,58 @@ body {
 
 }
 
+.heroHeading {
+  font-weight: 900;
+  font-size: 55px;
+  color: #ffffff
+
+}
+
+.modalHeading {
+  font-weight: 900;
+  font-size: 48px;
+  margin-top: 15px;
+  color: #232f49;
+}
+
+#filmController {
+  margin-left: 7px;
+  margin-bottom: 40px;
+}
+
+
 .filmTitle {
-  font-weight: 900 'Black';
+  font-weight:400;
   font-size: 16px;
   color: #ffffff;
   transform-origin: left;
+}
+
+.filterText {
+  font-weight:400;
+  font-size: 16px;
+  color: #ffffff;
+  transform-origin: left;
+}
+
+.filmSquare {
+  font-weight:600;
+  font-size: 16px;
+  color: #000000;
+  transform-origin: left;
+  
+}
+
+
+.filmDescription {
+  
+}
+
+.subheading {
+  font-weight: 900;
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 0px;
 }
 
 
@@ -21,12 +68,17 @@ body {
   /* display: none; */
   z-index: 1;
   width: 75%;
-  height: 50%;
+  height: auto;
   left: 12%;
   top: 25%;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 20px;
   position: fixed;
   overflow: hidden;
-  background-color: #4cbcc2;
+  background-color: #ebeff2;
+  color: #232f49;
+  
 }
 
 /* modal menu's close button */
@@ -63,8 +115,9 @@ body {
 }
 
 .square {
+  background-color: #4cbcc2; 
   position: relative;
-  flex-basis:  100px;
+  flex-basis:  125px;
   margin: 5px;
   border: 1px solid;
   text-align: center;
@@ -89,4 +142,12 @@ body {
   top: 0; left: 0;
   height: 100%;
   width: 100%;
+}
+
+.filmSquareTitle {
+  color: #232f49;
+  margin-top: 2px;
+  margin-bottom: 0px;
+  font-weight: bolder;
+  font-size: 17px;
 }
