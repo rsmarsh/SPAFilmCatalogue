@@ -1,6 +1,6 @@
 # Film catalogue
 
-This application takes a list of film titles, provided by a .json file, and displays it in a user-friendly format.  
+This application takes a list of film titles, provided by a .json file, and displays it in a user-friendly format. This project is relatively unstyled, and is used as a demonstration of React components.
 
 ## Operating
 
